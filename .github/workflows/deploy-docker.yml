@@ -28,7 +28,7 @@ jobs:
 
     - name: Build and Push Docker image
       run: |
-        IMAGE_TAG=$(echo ${{ github.sha }} | cut -c1-7)
+        IMAGE_TAG=$(echo "sahla")
         IMAGE_NAME=acrFirst.azurecr.io/fhirserver:${IMAGE_TAG}
         docker build -f build/docker/Dockerfile --build-arg FHIR_VERSION=R4 --build-arg ASSEMBLY_VER=1.0.0 -t $IMAGE_NAME .
         docker push $IMAGE_NAME
