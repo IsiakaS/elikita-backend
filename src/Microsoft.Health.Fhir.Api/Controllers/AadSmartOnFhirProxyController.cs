@@ -152,7 +152,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
             {
                 var callbackUrl = _urlResolver.ResolveRouteNameUrl(
                     RouteNames.AadSmartOnFhirProxyCallback,
-                                        new RouteValueDictionary { { "encodedRedirect", Base64UrlEncoder.Encode(redirectUri.ToString()) } });
+                    new RouteValueDictionary { { "encodedRedirect", Base64UrlEncoder.Encode(redirectUri.ToString()) } });
 
                 if (callbackUrl != null)
                 {
