@@ -115,6 +115,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
         /// <param name="aud">aud (audience) URL parameter.</param>
         /// <param name="codeChallenge">code_challenge URL parameter.</param>
         /// <param name="codeChallengeMethod">code_challenge_method URL parameter.</param>
+        /// <param name="resource">resource URL parameter.</param>
         [HttpGet]
         [AuditEventType(AuditEventSubType.SmartOnFhirAuthorize)]
         [Route("authorize", Name = RouteNames.AadSmartOnFhirProxyAuthorize)]
@@ -126,9 +127,9 @@ namespace Microsoft.Health.Fhir.Api.Controllers
             [FromQuery(Name = "scope")] string scope,
             [FromQuery(Name = "state")] string state,
             [FromQuery(Name = "aud")] string aud,
-            [FromQuery(Name = "resource")] string resource,
             [FromQuery(Name = "code_challenge")] string codeChallenge,
-            [FromQuery(Name = "code_challenge_method")] string codeChallengeMethod)
+            [FromQuery(Name = "code_challenge_method")] string codeChallengeMethod,
+            [FromQuery(Name = "resource")] string resource)
         {
             if (string.IsNullOrEmpty(launch))
             {
