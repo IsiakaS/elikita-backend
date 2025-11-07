@@ -245,11 +245,12 @@ namespace Microsoft.Health.Fhir.Api.Controllers
             {
                 throw new AadSmartOnFhirProxyBadRequestException(string.Format(Resources.InvalidRedirectUri, redirectUrl), ex);
             }
-            //nov 7
+
             if (redirectUrl != null)
             {
                 redirectUrl = EnsureHttps(redirectUrl) ?? redirectUrl;
             }
+
             if (!string.IsNullOrEmpty(error))
             {
                 var errorQueryBuilder = new QueryBuilder
@@ -396,24 +397,23 @@ namespace Microsoft.Health.Fhir.Api.Controllers
 
             // Uri callbackUrl = _urlResolver.ResolveRouteNameUrl(RouteNames.AadSmartOnFhirProxyCallback, new RouteValueDictionary { { "encodedRedirect", Base64UrlEncoder.Encode(redirectUri.ToString()) } });
             // ...existing code...
+            // ...existing code...
             Uri callbackUrl = _urlResolver.ResolveRouteNameUrl(
                 RouteNames.AadSmartOnFhirProxyCallback,
                 new RouteValueDictionary { { "encodedRedirect", Base64UrlEncoder.Encode(redirectUri.ToString()) } });
 
-           
-
             var secureCallbackUrl = EnsureHttps(callbackUrl) ?? callbackUrl;
 
-            
-            // ...existing code...
+            // Build the form values for the token request.
             var formValues = new List<KeyValuePair<string, string>>(
                 new[]
                 {
                     new KeyValuePair<string, string>("grant_type", grantType),
                     new KeyValuePair<string, string>("code", code),
-                    new KeyValuePair<string, string>("redirect_uri", callbackUrl.AbsoluteUri),
+                    new KeyValuePair<string, string>("redirect_uri", secureCallbackUrl.AbsoluteUri),
                     new KeyValuePair<string, string>("client_id", clientId),
                 });
+            // ...existing code...
 
             if (!string.IsNullOrEmpty(clientSecret))
             {
@@ -483,6 +483,12 @@ namespace Microsoft.Health.Fhir.Api.Controllers
         /// If the URI is relative and Request host is available, builds an absolute HTTPS URI using the current request host.
         /// On any error, returns the original URI to avoid breaking the auth flow.
         /// </summary>
+        // ...existing code...
+        /// <summary>
+        /// Ensure the given URI uses HTTPS. If the URI is absolute, returns an equivalent URI with HTTPS scheme.
+        /// If the URI is relative and Request host is available, builds an absolute HTTPS URI using the current request host.
+        /// On any error, returns the original URI to avoid breaking the auth flow.
+        /// </summary>
         private Uri EnsureHttps(Uri uri)
         {
             if (uri == null)
@@ -513,7 +519,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
                 {
                     var host = Request.Host.Host;
                     var path = uri.OriginalString;
-                    if (!path.StartsWith("/", StringComparison.Ordinal))
+                    if (!path.StartsWith('/'))
                     {
                         path = "/" + path;
                     }
@@ -537,6 +543,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
                 return uri;
             }
         }
+        // ...existing code...S
         // ...existing code...
         private static bool IsAbsoluteUrl(string url)
         {
