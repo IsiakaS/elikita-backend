@@ -111,6 +111,8 @@ namespace Microsoft.Health.Fhir.Api.Controllers
         /// <param name="redirectUri">redirect_uri URL parameter.</param>
         /// <param name="launch">launch (launch context)URL parameter.</param>
         /// <param name="scope">scope URL parameter.</param>
+        /// <param name="code_challenge">code_challenge URL parameter.</param>
+        /// <param name="code_challenge_method">code_challenge_method URL parameter.</param
         /// <param name="state">state URL parameter.</param>
         /// <param name="aud">aud (audience) URL parameter.</param>
         [HttpGet]
@@ -124,8 +126,8 @@ namespace Microsoft.Health.Fhir.Api.Controllers
             [FromQuery(Name = "scope")] string scope,
             [FromQuery(Name = "state")] string state,
             [FromQuery(Name = "aud")] string aud,
-            [FromQuery(Name = "code_challenge")] string code_challenge,
-            [FromQuery(Name = "code_challenge_method")] string code_challenge_method)
+            [FromQuery(Name = "code_challenge")] string codeChallenge,
+            [FromQuery(Name = "code_challenge_method")] string codeChallengeMethod)
         {
             if (string.IsNullOrEmpty(launch))
             {
@@ -150,10 +152,10 @@ namespace Microsoft.Health.Fhir.Api.Controllers
                 queryBuilder.Add("client_id", clientId);
             }
 
-            if (!string.IsNullOrEmpty(code_challenge))
+            if (!string.IsNullOrEmpty(codeChallenge))
             {
-                queryBuilder.Add("code_challenge", code_challenge);
-                queryBuilder.Add("code_challenge_method", string.IsNullOrEmpty(code_challenge_method) ? "S256" : code_challenge_method);
+                queryBuilder.Add("code_challenge", codeChallenge);
+                queryBuilder.Add("code_challenge_method", string.IsNullOrEmpty(codeChallengeMethod) ? "S256" : codeChallengeMethod);
             }
 
             try
