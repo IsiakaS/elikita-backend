@@ -175,11 +175,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
                 _logger.LogDebug(ex, "Redirect URL passed to Authorize failed to resolve.");
             }
 
-            if (!_isAadV2 && !string.IsNullOrEmpty(aud))
-            {
-                queryBuilder.Add("resource", aud);
-            }
-            else if (!string.IsNullOrEmpty(scope))
+            if (!string.IsNullOrEmpty(scope))
             {
                 // Azure AD v2.0 uses fully qualified scopes and does not allow '/' (slash)
                 // We add qualification to scopes and replace '/' -> '$'
