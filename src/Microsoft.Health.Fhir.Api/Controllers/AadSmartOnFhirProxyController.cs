@@ -111,10 +111,10 @@ namespace Microsoft.Health.Fhir.Api.Controllers
         /// <param name="redirectUri">redirect_uri URL parameter.</param>
         /// <param name="launch">launch (launch context)URL parameter.</param>
         /// <param name="scope">scope URL parameter.</param>
-        /// <param name="code_challenge">code_challenge URL parameter.</param>
-        /// <param name="code_challenge_method">code_challenge_method URL parameter.</param
         /// <param name="state">state URL parameter.</param>
         /// <param name="aud">aud (audience) URL parameter.</param>
+        /// <param name="codeChallenge">code_challenge URL parameter.</param>
+        /// <param name="codeChallengeMethod">code_challenge_method URL parameter.</param>
         [HttpGet]
         [AuditEventType(AuditEventSubType.SmartOnFhirAuthorize)]
         [Route("authorize", Name = RouteNames.AadSmartOnFhirProxyAuthorize)]
