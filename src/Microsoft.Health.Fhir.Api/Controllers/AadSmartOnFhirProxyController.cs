@@ -126,6 +126,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
             [FromQuery(Name = "scope")] string scope,
             [FromQuery(Name = "state")] string state,
             [FromQuery(Name = "aud")] string aud,
+            [FromQuery(Name = "resource")] string resource,
             [FromQuery(Name = "code_challenge")] string codeChallenge,
             [FromQuery(Name = "code_challenge_method")] string codeChallengeMethod)
         {
@@ -145,6 +146,11 @@ namespace Microsoft.Health.Fhir.Api.Controllers
             if (!string.IsNullOrEmpty(responseType))
             {
                 queryBuilder.Add("response_type", responseType);
+            }
+
+            if (!string.IsNullOrEmpty(resource))
+            {
+                queryBuilder.Add("resource", resource);
             }
 
             if (!string.IsNullOrEmpty(clientId))
