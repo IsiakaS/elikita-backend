@@ -400,10 +400,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
                 RouteNames.AadSmartOnFhirProxyCallback,
                 new RouteValueDictionary { { "encodedRedirect", Base64UrlEncoder.Encode(redirectUri.ToString()) } });
 
-            if (callbackUrl == null)
-            {
-                throw new AadSmartOnFhirProxyBadRequestException("Failed to resolve callback URL.");
-            }
+           
 
             var secureCallbackUrl = EnsureHttps(callbackUrl) ?? callbackUrl;
 
