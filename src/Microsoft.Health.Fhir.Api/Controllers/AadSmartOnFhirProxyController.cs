@@ -404,14 +404,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
 
             var secureCallbackUrl = EnsureHttps(callbackUrl) ?? callbackUrl;
 
-            var formValues = new List<KeyValuePair<string, string>>(
-                new[]
-                {
-        new KeyValuePair<string, string>("grant_type", grantType),
-        new KeyValuePair<string, string>("code", code),
-        new KeyValuePair<string, string>("redirect_uri", secureCallbackUrl.AbsoluteUri),
-        new KeyValuePair<string, string>("client_id", clientId),
-                });
+            
             // ...existing code...
             var formValues = new List<KeyValuePair<string, string>>(
                 new[]
