@@ -123,7 +123,9 @@ namespace Microsoft.Health.Fhir.Api.Controllers
             [FromQuery(Name = "launch")] string launch,
             [FromQuery(Name = "scope")] string scope,
             [FromQuery(Name = "state")] string state,
-            [FromQuery(Name = "aud")] string aud)
+            [FromQuery(Name = "aud")] string aud,
+            [FromQuery(Name = "code_challenge")] string code_challenge,
+            [FromQuery(Name = "code_challenge_method")] string code_challenge_method)
         {
             if (string.IsNullOrEmpty(launch))
             {
@@ -146,6 +148,12 @@ namespace Microsoft.Health.Fhir.Api.Controllers
             if (!string.IsNullOrEmpty(clientId))
             {
                 queryBuilder.Add("client_id", clientId);
+            }
+
+            if (!string.IsNullOrEmpty(code_challenge))
+            {
+                queryBuilder.Add("code_challenge", code_challenge);
+                queryBuilder.Add("code_challenge_method", string.IsNullOrEmpty(code_challenge_method) ? "S256" : code_challenge_method);
             }
 
             try
