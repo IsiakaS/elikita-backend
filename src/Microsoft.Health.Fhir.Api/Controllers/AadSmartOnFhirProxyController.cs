@@ -148,15 +148,33 @@ namespace Microsoft.Health.Fhir.Api.Controllers
                 queryBuilder.Add("client_id", clientId);
             }
 
-            try
-            {
-                var callbackUrl = _urlResolver.ResolveRouteNameUrl(RouteNames.AadSmartOnFhirProxyCallback, new RouteValueDictionary { { "encodedRedirect", Base64UrlEncoder.Encode(redirectUri.ToString()) } });
-                queryBuilder.Add("redirect_uri", callbackUrl.AbsoluteUri);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogDebug(ex, "Redirect URL passed to Authorize failed to resolve.");
-            }
+            // try
+            // {
+            //     var callbackUrl = _urlResolver.ResolveRouteNameUrl(RouteNames.AadSmartOnFhirProxyCallback, new RouteValueDictionary { { "encodedRedirect", Base64UrlEncoder.Encode(redirectUri.ToString()) } });
+            //     queryBuilder.Add("redirect_uri", callbackUrl.AbsoluteUri);
+            // }
+            // catch (Exception ex)
+            // {
+            //     _logger.LogDebug(ex, "Redirect URL passed to Authorize failed to resolve.");
+            // }
+            // ...existing code...
+try
+{
+    var callbackUrl = _urlResolver.ResolveRouteNameUrl(
+        RouteNames.AadSmartOnFhirProxyCallback,
+        new RouteValueDictionary { { "encodedRedirect", Base64UrlEncoder.Encode(redirectUri.ToString()) } });
+
+    if (callbackUrl != null)
+    {
+        var secureCallback = EnsureHttps(callbackUrl);
+        queryBuilder.Add("redirect_uri", secureCallback?.AbsoluteUri ?? callbackUrl.AbsoluteUri);
+    }
+}
+catch (Exception ex)
+{
+    _logger.LogDebug(ex, "Redirect URL passed to Authorize failed to resolve.");
+}
+// ...existing code...
 
             if (!_isAadV2 && !string.IsNullOrEmpty(aud))
             {
@@ -227,7 +245,11 @@ namespace Microsoft.Health.Fhir.Api.Controllers
             {
                 throw new AadSmartOnFhirProxyBadRequestException(string.Format(Resources.InvalidRedirectUri, redirectUrl), ex);
             }
-
+            //nov 7
+if (redirectUrl != null)
+{
+    redirectUrl = EnsureHttps(redirectUrl) ?? redirectUrl;
+}
             if (!string.IsNullOrEmpty(error))
             {
                 var errorQueryBuilder = new QueryBuilder
@@ -372,8 +394,28 @@ namespace Microsoft.Health.Fhir.Api.Controllers
                 throw new AadSmartOnFhirProxyBadRequestException(Resources.InvalidCompoundCode, ex);
             }
 
-            Uri callbackUrl = _urlResolver.ResolveRouteNameUrl(RouteNames.AadSmartOnFhirProxyCallback, new RouteValueDictionary { { "encodedRedirect", Base64UrlEncoder.Encode(redirectUri.ToString()) } });
+            // Uri callbackUrl = _urlResolver.ResolveRouteNameUrl(RouteNames.AadSmartOnFhirProxyCallback, new RouteValueDictionary { { "encodedRedirect", Base64UrlEncoder.Encode(redirectUri.ToString()) } });
+// ...existing code...
+Uri callbackUrl = _urlResolver.ResolveRouteNameUrl(
+    RouteNames.AadSmartOnFhirProxyCallback,
+    new RouteValueDictionary { { "encodedRedirect", Base64UrlEncoder.Encode(redirectUri.ToString()) } });
 
+if (callbackUrl == null)
+{
+    throw new AadSmartOnFhirProxyBadRequestException("Failed to resolve callback URL.");
+}
+
+var secureCallbackUrl = EnsureHttps(callbackUrl) ?? callbackUrl;
+
+var formValues = new List<KeyValuePair<string, string>>(
+    new[]
+    {
+        new KeyValuePair<string, string>("grant_type", grantType),
+        new KeyValuePair<string, string>("code", code),
+        new KeyValuePair<string, string>("redirect_uri", secureCallbackUrl.AbsoluteUri),
+        new KeyValuePair<string, string>("client_id", clientId),
+    });
+// ...existing code...
             var formValues = new List<KeyValuePair<string, string>>(
                 new[]
                 {
@@ -445,7 +487,67 @@ namespace Microsoft.Health.Fhir.Api.Controllers
                 ContentType = "application/json",
             };
         }
+// ...existing code...
+/// <summary>
+/// Ensure the given URI uses HTTPS. If the URI is absolute, returns an equivalent URI with HTTPS scheme.
+/// If the URI is relative and Request host is available, builds an absolute HTTPS URI using the current request host.
+/// On any error, returns the original URI to avoid breaking the auth flow.
+/// </summary>
+private Uri EnsureHttps(Uri uri)
+{
+    if (uri == null)
+    {
+        return null;
+    }
 
+    try
+    {
+        if (uri.IsAbsoluteUri)
+        {
+            if (string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+            {
+                return uri;
+            }
+
+            var builder = new UriBuilder(uri)
+            {
+                Scheme = Uri.UriSchemeHttps,
+                Port = -1, // default HTTPS port
+            };
+
+            return builder.Uri;
+        }
+
+        // For relative URIs, attempt to build absolute using current request host (force HTTPS).
+        if (Request?.Host.HasValue == true)
+        {
+            var host = Request.Host.Host;
+            var path = uri.OriginalString;
+            if (!path.StartsWith("/", StringComparison.Ordinal))
+            {
+                path = "/" + path;
+            }
+
+            var builder = new UriBuilder
+            {
+                Scheme = Uri.UriSchemeHttps,
+                Host = host,
+                Port = -1,
+                Path = path,
+            };
+
+            return builder.Uri;
+        }
+
+        return uri;
+    }
+    catch
+    {
+        // Defensive: return original on any unexpected error.
+        return uri;
+    }
+}
+// ...existing code...
         private static bool IsAbsoluteUrl(string url)
         {
             return Uri.TryCreate(url, UriKind.Absolute, out _);
