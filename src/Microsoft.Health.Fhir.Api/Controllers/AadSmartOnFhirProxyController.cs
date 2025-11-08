@@ -306,6 +306,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
         /// <param name="redirectUri">redirect_uri request parameter.</param>
         /// <param name="clientId">client_id request parameter.</param>
         /// <param name="clientSecret">client_secret request parameter.</param>
+        /// <param name="codeVerifier">code_verifier request parameter.</param>
         [HttpPost]
         [AuditEventType(AuditEventSubType.SmartOnFhirToken)]
         [Route("token", Name = RouteNames.AadSmartOnFhirProxyToken)]
@@ -314,7 +315,8 @@ namespace Microsoft.Health.Fhir.Api.Controllers
             [FromForm(Name = "code")] string compoundCode,
             [FromForm(Name = "redirect_uri")] Uri redirectUri,
             [FromForm(Name = "client_id")] string clientId,
-            [FromForm(Name = "client_secret")] string clientSecret)
+            [FromForm(Name = "client_secret")] string clientSecret,
+            [FromForm(Name = "code_verifier")] string codeVerifier)
         {
             try
             {
