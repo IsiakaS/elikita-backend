@@ -412,7 +412,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
                 {
                     new KeyValuePair<string, string>("grant_type", grantType),
                     new KeyValuePair<string, string>("code", code),
-                    new KeyValuePair<string, string>("code_verifier", code_verifier),
+                    new KeyValuePair<string, string>("code_verifier", codeVerifier),
                     new KeyValuePair<string, string>("redirect_uri", secureCallbackUrl?.AbsoluteUri ?? callbackUrl?.AbsoluteUri),
                     new KeyValuePair<string, string>("client_id", clientId),
                 });
