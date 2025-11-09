@@ -407,6 +407,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
             var secureCallbackUrl = EnsureHttps(callbackUrl) ?? callbackUrl;
 
             // Build the form values for the token request.
+            // new KeyValuePair<string, string>("client_secret", "Hlo8Q~WMxHtZ1c_iwXfnn_jVCC5a9XIYil.UPb1B"),
             var formValues = new List<KeyValuePair<string, string>>(
                 new[]
                 {
@@ -415,7 +416,6 @@ namespace Microsoft.Health.Fhir.Api.Controllers
                     new KeyValuePair<string, string>("code_verifier", codeVerifier),
                     new KeyValuePair<string, string>("redirect_uri", secureCallbackUrl?.AbsoluteUri ?? callbackUrl?.AbsoluteUri),
                     new KeyValuePair<string, string>("client_id", clientId),
-                    new KeyValuePair<string, string>("client_secret", "Hlo8Q~WMxHtZ1c_iwXfnn_jVCC5a9XIYil.UPb1B"),
                 });
 
             if (!string.IsNullOrEmpty(clientSecret))
