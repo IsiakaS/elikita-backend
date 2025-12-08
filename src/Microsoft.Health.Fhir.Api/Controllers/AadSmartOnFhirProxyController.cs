@@ -185,7 +185,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
 
                 var newScopes = scopesBuilder.ToString().TrimEnd(' ');
 
-                queryBuilder.Add("scope", Uri.EscapeDataString(newScopes));
+                queryBuilder.Add("scope", newScopes);
             }
 
             if (!string.IsNullOrEmpty(state))
