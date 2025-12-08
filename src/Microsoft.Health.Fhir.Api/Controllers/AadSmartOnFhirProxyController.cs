@@ -154,7 +154,7 @@ namespace Microsoft.Health.Fhir.Api.Controllers
                 var builder = new UriBuilder(callbackUrl)
                 {
                     Scheme = Uri.UriSchemeHttps,
-                    Port = -1
+                    Port = -1,
                 };
                 callbackUrl = builder.Uri;
                 queryBuilder.Add("redirect_uri", callbackUrl.AbsoluteUri);
